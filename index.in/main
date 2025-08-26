@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="ta">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Karuppi Lyrics Experience</title>
+<style>
+    * {margin: 0; padding: 0; box-sizing: border-box;}
+    body {
+        font-family: 'Arial', sans-serif;
+        background: url('https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcSAGlhQlIb6cTIalacOcjqppuH26i5oAv8nY4D6lCUBIWjRf-Ik') no-repeat center center/cover;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        color: #fff;
+        position: relative;
+    }
+    .overlay {
+        position: absolute;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
+        background: rgba(0,0,0,0.6);
+        z-index: 0;
+    }
+    .lyrics-box {
+        position: relative;
+        z-index: 2;
+        font-size: 2rem;
+        font-weight: bold;
+        margin: 20px;
+        animation: fadeIn 3s ease-in-out infinite;
+    }
+    @keyframes fadeIn {
+        0% {opacity: 0;}
+        50% {opacity: 1;}
+        100% {opacity: 0;}
+    }
+    .tabs {
+        position: relative;
+        z-index: 2;
+        display: flex;
+        gap: 10px;
+        margin-top: 15px;
+    }
+    .tab-btn {
+        background: #ff0055;
+        border: none;
+        padding: 10px 15px;
+        color: white;
+        font-size: 1rem;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+    .tab-btn:hover { background: #e6004c; }
+    .tab-content {
+        display: none;
+        margin-top: 15px;
+        font-size: 1.2rem;
+        position: relative;
+        z-index: 2;
+        max-width: 90%;
+    }
+    .tab-content.active {display: block;}
+    .controls {
+        position: relative;
+        z-index: 2;
+        margin-top: 20px;
+    }
+    #playBtn {
+        background: #ffcc00;
+        border: none;
+        padding: 10px 15px;
+        font-size: 1rem;
+        color: #000;
+        border-radius: 6px;
+        cursor: pointer;
+    }
+    .character {
+        width: 120px;
+        height: 220px;
+        background: url('https://cdn.pixabay.com/photo/2017/06/20/03/36/man-2423308_960_720.png') no-repeat center/contain;
+        position: absolute;
+        bottom: 20px;
+        left: -150px;
+        animation: walkAcross 15s linear infinite;
+        z-index: 1;
+    }
+    @keyframes walkAcross {
+        0% { left: -150px; }
+        100% { left: 100%; }
+    }
+</style>
+</head>
+<body>
+    <div class="overlay"></div>
+    <div class="character"></div>
+    <div class="lyrics-box" id="lyrics-box"></div>
+    
+    <div class="tabs">
+        <button class="tab-btn" onclick="showTab('summary')">Summary</button>
+        <button class="tab-btn" onclick="showTab('tamil')">Tamil</button>
+        <button class="tab-btn" onclick="showTab('english')">English</button>
+    </div>
+
+    <div id="summary" class="tab-content active">
+        A song that questions caste and injustice, evoking deep emotion through Karuppi’s story.
+    </div>
+    <div id="tamil" class="tab-content">
+        கருப்பி என் கருப்பி, எங்க போனாய் கருப்பி?<br>
+        உன் நினைவுகள் நெஞ்சை உருக்குது.
+    </div>
+    <div id="english" class="tab-content">
+        Oh Karuppi, where have you gone?<br>
+        Shadows weep in your silence.
+    </div>
+
+    <div class="controls">
+        <button id="playBtn">Play Music</button>
+    </div>
+
+    <!-- YouTube Player -->
+    <div id="yt-player" style="display:none;"></div>
+    <script src="https://www.youtube.com/iframe_api"></script>
+    <script>
+        const lyrics = [
+            "கருப்பி என் கருப்பி, எங்க போனாய் கருப்பி?",
+            "உன் நினைவுகள் நெஞ்சை உருக்குது...",
+            "பார்த்த பாசம் போச்சே, வாழ்க்கை வஞ்சம் ஆச்சே...",
+            "எங்கோ நீ தொலைந்தாயே..."
+        ];
+        let index = 0;
+        const box = document.getElementById('lyrics-box');
+        function showLyrics() {
+            box.innerHTML = lyrics[index];
+            index = (index + 1) % lyrics.length;
+        }
+        setInterval(showLyrics, 4000);
+        showLyrics();
+
+        function showTab(id){
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+        }
+
+        let player;
+        function onYouTubeIframeAPIReady(){
+            player = new YT.Player('yt-player', {
+                videoId: '5IXdCWhQG78',
+                events: { 'onReady': onPlayerReady }
+            });
+        }
+        function onPlayerReady(){
+            document.getElementById('playBtn').onclick = () => {
+                player.playVideo();
+                document.getElementById('playBtn').innerText = 'Pause Music';
+                document.getElementById('playBtn').onclick = () => {
+                    player.pauseVideo();
+                    document.getElementById('playBtn').innerText = 'Play Music';
+                };
+            };
+        }
+    </script>
+</body>
+</html>
